@@ -2,14 +2,18 @@ import paho.mqtt.client as mqtt
 import pymongo
 import json
 import datetime
+import time
+
 
 topic = "valve"
 host = "localhost"
 broker_address = "localhost"
+mongo_port = 27017
 soil_humidity_level_to_irrigate = 350
+sleep_timer = 10
 
 # setup connection to db
-client = pymongo.MongoClient("localhost", 27017)
+client = pymongo.MongoClient("localhost", mongo_port)
 db = client['mqtt-db']
 mqtt_collection = db['mqtt-collection']
 
@@ -21,10 +25,10 @@ def on_connect(client, userdata, flags, rc):
     # reconnect then subscriptions will be renewed.
     client.subscribe(topic)
 
-def mqtt_connection_setup:
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.connect(broker_address, 1883, 60)
+def mqtt_connection_setup():
+    mqtt_client = mqtt.Client()
+    mqtt_client.on_connect = on_connect
+    mqtt_client.connect(broker_address, 1883, 60)
     
 
 # return a list of distinct ids
@@ -43,16 +47,24 @@ def should_irrigate(id):
     return False
 
 def start_irrigate(id):
-    return True
+    return mqtt_client.publish(topic, "ON-" + str(id))
     
 def irrigation_controller():
-    available_sensors = get_available_sensors_ids()
+    while(True):
+        available_sensors = get_available_sensors_ids()
 
-    for id in available_sensors:
-        if (should_irrigate(id)):
-            start_irrigate(id)
+        for id in available_sensors:
+            if (should_irrigate(id)):
+                start_irrigate(id)
+
+        time.sleep(sleep_timer)
         #print(str(get_latest_sensor_data(id)) + " should irrigate: " + str(should_irrigate(id)))
 
+#starting the program
+mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
+mqtt_client.connect(broker_address, 1883, 60)
 irrigation_controller()
-#last_obs = get_latest_sensor_data(1)
-#print(last_obs)
+
+
+
