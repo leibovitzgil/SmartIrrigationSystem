@@ -3,9 +3,9 @@
 #include <string>
 
 
-#define MQTT_SERVER "192.168.43.49"
-const char* ssid = "AndroidAP";
-const char* password = "xbjx1325";
+#define MQTT_SERVER "192.168.xx.xx"
+const char* ssid = "**********";
+const char* password = "*********";
 int GPIO3 = 5;
 int GPIO2 = 4;
 char* topic = "valve";
@@ -19,18 +19,16 @@ void callback(char* topic, byte* payload, unsigned int length) {
   char str[12];
 
   //converting byte* to char*
-  byteArayToCharArray(str,payload,length);
+  byteArayToCharArray(str, payload, length);
 
-//turn the light on if the payload is '1' and publish to the MQTT server a confirmation message
-//  if(str == "ON-2"){
-   if(strcmp(str, "ON-2") == 0){
+  //turn the valve on if the payload is 'ON-2' and publish to the MQTT server a confirmation message
+  if (strcmp(str, "ON-2") == 0) {
     digitalWrite(4, LOW);
     client.publish(topic, "Light On");
-//    Serial.println(str);
   }
 
-  //turn the light off if the payload is '0' and publish to the MQTT server a confirmation message
-  else if (strcmp(str, "OFF-2") == 0){
+  //turn the valve off if the payload is 'OFF-2' and publish to the MQTT server a confirmation message
+  else if (strcmp(str, "OFF-2") == 0) {
     digitalWrite(4, HIGH);
     client.publish(topic, "Light Off");
   }
@@ -49,27 +47,29 @@ void setup() {
   reconnect();
 
   //wait a bit before starting the main loop
-      delay(2000);
+  delay(2000);
 }
 
 void loop() {
-  
 
-//reconnect if connection is lost
-  if (!client.connected() && WiFi.status() == 3) {reconnect();}
+
+  //reconnect if connection is lost
+  if (!client.connected() && WiFi.status() == 3) {
+    reconnect();
+  }
 
   //maintain MQTT connection
   client.loop();
 
   //MUST delay to allow ESP8266 WIFI functions to run
-  delay(10); 
+  delay(10);
 }
 
 
 void reconnect() {
 
   //attempt to connect to the wifi if connection is lost
-  if(WiFi.status() != WL_CONNECTED){
+  if (WiFi.status() != WL_CONNECTED) {
     //debug printing
     Serial.print("Connecting to ");
     Serial.println(ssid);
@@ -82,14 +82,14 @@ void reconnect() {
 
     //print out some more debug once connected
     Serial.println("");
-    Serial.println("WiFi connected");  
+    Serial.println("WiFi connected");
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
   }
 
   //make sure we are connected to WIFI before attemping to reconnect to MQTT
-  if(WiFi.status() == WL_CONNECTED){
-  // Loop until we're reconnected to the MQTT server
+  if (WiFi.status() == WL_CONNECTED) {
+    // Loop until we're reconnected to the MQTT server
     while (!client.connected()) {
       Serial.print("Attempting MQTT connection...");
 
@@ -107,20 +107,23 @@ void reconnect() {
       }
 
       //otherwise print failed for debugging
-      else{Serial.println("\tFailed."); abort();}
+      else {
+        Serial.println("\tFailed.");
+        abort();
+      }
     }
   }
 }
 
 //generate unique name from MAC addr
-String macToStr(const uint8_t* mac){
+String macToStr(const uint8_t* mac) {
 
   String result;
 
   for (int i = 0; i < 6; ++i) {
     result += String(mac[i], 16);
 
-    if (i < 5){
+    if (i < 5) {
       result += ':';
     }
   }
@@ -129,12 +132,12 @@ String macToStr(const uint8_t* mac){
 }
 
 
-void byteArayToCharArray(char* str, byte* barr, unsigned int length){
-int i = 0;
-    for(; i < length; ++i){
-      str[i] = barr[i];
-    }
-    str[i] = '\0';
+void byteArayToCharArray(char* str, byte* barr, unsigned int length) {
+  int i = 0;
+  for (; i < length; ++i) {
+    str[i] = barr[i];
+  }
+  str[i] = '\0';
 }
 
 

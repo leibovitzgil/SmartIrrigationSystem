@@ -11,9 +11,9 @@ float temperature, humidity, soilHumidity;
 
 WiFiClient tsclient;
 
-#define MQTT_SERVER "192.168.43.49"
-const char* ssid = "AndroidAP";
-const char* password = "xbjx1325";
+#define MQTT_SERVER "192.168.xx.xx"
+const char* ssid = "**************8";
+const char* password = "************";
 const char id = '2';
 
 
