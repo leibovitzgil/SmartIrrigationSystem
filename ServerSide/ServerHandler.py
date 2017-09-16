@@ -4,7 +4,7 @@ import json
 import datetime
 # Import library and create instance of REST client.
 from Adafruit_IO import Client
-aio = Client('a69e8c2cfe6a47408d947332238fa00f')
+aio = Client('66144fa802464d38bfa34c36e79e23f9')
 
 topic = "sensor"
 host = "localhost"
@@ -32,25 +32,15 @@ def on_message(client, userdata, msg):
         data = json.loads(data_str)
         data["date"] = datetime.datetime.now()
         mqtt_collection.save(data)
-
-
-        #irrigate handle
-       # if (data["light"] < 400):
-          #  client.publish(topic, "0")
-           # sleep(2000)
-           # client.publish(topic, "1")
-
             
         #Adafruit handle
         humidity = str(data["humidity"])
         temperature = str(data["temperature"])
-        light = str(data["light"])
-
-
+        soilHumidity = str(data["soilHumidity"])
 
         aio.send('humidity', humidity)
         aio.send('temperature', temperature)
-        aio.send('light', light)
+        aio.send('soilHumidity', soilHumidity)
 
 
         print(msg.topic+" "+str(msg.payload))

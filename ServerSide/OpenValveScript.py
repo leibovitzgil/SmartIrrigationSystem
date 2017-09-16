@@ -10,7 +10,7 @@ host = "localhost"
 broker_address = "localhost"
 mongo_port = 27017
 soil_humidity_level_to_irrigate = 350
-sleep_timer = 10
+sleep_timer = 60
 
 # setup connection to db
 client = pymongo.MongoClient("localhost", mongo_port)
@@ -41,13 +41,24 @@ def get_latest_sensor_data(id):
 
 # checks if irrigation is necessary
 def should_irrigate(id):
-    data = get_latest_sensor_data(id)
-    if(data["test"] > soil_humidity_level_to_irrigate):
-        return True
-    return False
+    try:
+        data = get_latest_sensor_data(id)
+        if(data["soilHumidity"] > soil_humidity_level_to_irrigate):
+            return True
+        else:
+            return False
+
+    except:
+        print("there was an error with data")
+        return False
+        
+            
 
 def start_irrigate(id):
-    return mqtt_client.publish(topic, "ON-" + str(id))
+    mqtt_client.publish(topic, "ON-" + str(id))
+
+def stop_irrigate(id):
+    mqtt_client.publish(topic, "OFF-" + str(id))
     
 def irrigation_controller():
     while(True):
@@ -56,10 +67,11 @@ def irrigation_controller():
         for id in available_sensors:
             if (should_irrigate(id)):
                 start_irrigate(id)
-
+            else:
+                stop_irrigate(id)
+                
         time.sleep(sleep_timer)
-        #print(str(get_latest_sensor_data(id)) + " should irrigate: " + str(should_irrigate(id)))
-
+        
 #starting the program
 mqtt_client = mqtt.Client()
 mqtt_client.on_connect = on_connect
