@@ -7,8 +7,8 @@ import time
 
 topic = "valve"
 host = "localhost"
-mqtt_client = None
 broker_address = "localhost"
+mqtt_client = mqtt.Client()
 mongo_port = 27017
 soil_humidity_level_to_irrigate = 350
 sleep_timer = 60
@@ -27,7 +27,6 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topic)
 
 def mqtt_connection_setup():
-    mqtt_client = mqtt.Client()
     mqtt_client.on_connect = on_connect
     mqtt_client.connect(broker_address, 1883, 60)
     
@@ -64,7 +63,7 @@ def stop_irrigate(id):
 def irrigation_controller():
     while(True):
         available_sensors = get_available_sensors_ids()
-
+		
         for id in available_sensors:
             if (should_irrigate(id)):
                 start_irrigate(id)
@@ -75,9 +74,6 @@ def irrigation_controller():
         
 #starting the program
 mqtt_connection_setup()
-#mqtt_client = mqtt.Client()
-#mqtt_client.on_connect = on_connect
-#mqtt_client.connect(broker_address, 1883, 60)
 irrigation_controller()
 
 
