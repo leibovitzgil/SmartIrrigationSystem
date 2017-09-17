@@ -5,6 +5,7 @@ import datetime
 import time
 
 
+
 topic = "valve"
 host = "localhost"
 broker_address = "localhost"
@@ -28,8 +29,25 @@ def on_connect(client, userdata, flags, rc):
 
 def mqtt_connection_setup():
     mqtt_client.on_connect = on_connect
+    mqtt_client.on_message = on_message
     mqtt_client.connect(broker_address, 1883, 60)
-    
+
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    try:
+        # db handle
+        data_str = str(msg.payload)
+        data = json.loads(data_str)
+        print("got msg")
+
+        if("sleeptimer" in data):
+            global sleep_timer
+            sleep_timer = data["sleeptimer"]
+
+    except:
+        print "there was an error with data2"
+
 
 # return a list of distinct ids
 def get_available_sensors_ids():
@@ -74,7 +92,10 @@ def irrigation_controller():
         
 #starting the program
 mqtt_connection_setup()
+mqtt_client.loop_start()
 irrigation_controller()
+
+mqtt_client.loop_stop()
 
 
 
