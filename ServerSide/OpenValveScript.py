@@ -3,10 +3,11 @@ import pymongo
 import json
 import datetime
 import time
-#
+
 
 topic = "valve"
 host = "localhost"
+mqtt_client = None
 broker_address = "localhost"
 mongo_port = 27017
 soil_humidity_level_to_irrigate = 350
@@ -73,9 +74,10 @@ def irrigation_controller():
         time.sleep(sleep_timer)
         
 #starting the program
-mqtt_client = mqtt.Client()
-mqtt_client.on_connect = on_connect
-mqtt_client.connect(broker_address, 1883, 60)
+mqtt_connection_setup()
+#mqtt_client = mqtt.Client()
+#mqtt_client.on_connect = on_connect
+#mqtt_client.connect(broker_address, 1883, 60)
 irrigation_controller()
 
 
