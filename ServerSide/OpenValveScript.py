@@ -78,24 +78,22 @@ def start_irrigate(id):
 def stop_irrigate(id):
     mqtt_client.publish(topic, "OFF-" + str(id))
     
-def irrigation_controller():
+def irrigation_controller(id):
     while(True):
-        available_sensors = get_available_sensors_ids()
-		
-        for id in available_sensors:
+
             if (should_irrigate(id)):
                 start_irrigate(id)
             else:
                 stop_irrigate(id)
                 
-        time.sleep(sleep_timer)
+            time.sleep(sleep_timer)
         
 #starting the program
-def main():
+def main(id):
     try:
         mqtt_connection_setup()
         mqtt_client.loop_start()
-        irrigation_controller()
+        irrigation_controller(id)
     except KeyboardInterrupt:
         #closing open threads
         mqtt_client.loop_stop()

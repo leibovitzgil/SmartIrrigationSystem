@@ -5,7 +5,7 @@ import time
 
 
 try:
-	processThread = threading.Thread(target=OpenValveScript.main)
+	processThread = threading.Thread(target=OpenValveScript.main, args=(3,))
 	processThread.daemon = True
 	processThread.start()
 	#OpenValveScript.main()
