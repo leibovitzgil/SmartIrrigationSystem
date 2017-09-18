@@ -8,6 +8,7 @@ import time
 
 topic = "valve"
 host = "localhost"
+sleep = "sleeptimer"
 broker_address = "localhost"
 mqtt_client = mqtt.Client()
 mongo_port = 27017
@@ -41,9 +42,9 @@ def on_message(client, userdata, msg):
         data = json.loads(data_str)
         print("got msg")
 
-        if("sleeptimer" in data):
+        if(sleep in data):
             global sleep_timer
-            sleep_timer = data["sleeptimer"]
+            sleep_timer = data[sleep]
 
     except:
         print "there was an error with data2"
@@ -91,6 +92,9 @@ def irrigation_controller(id):
 #starting the program
 def main(id):
     try:
+        global sleep
+        sleep = sleep + str(id)
+        print(sleep)
         mqtt_connection_setup()
         mqtt_client.loop_start()
         irrigation_controller(id)
