@@ -36,7 +36,7 @@ def mqtt_connection_setup():
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     try:
-        # db handle
+
         data_str = str(msg.payload)
         data = json.loads(data_str)
         print("got msg")
@@ -91,11 +91,17 @@ def irrigation_controller():
         time.sleep(sleep_timer)
         
 #starting the program
-mqtt_connection_setup()
-mqtt_client.loop_start()
-irrigation_controller()
+def main():
+    try:
+        mqtt_connection_setup()
+        mqtt_client.loop_start()
+        irrigation_controller()
+    except KeyboardInterrupt:
+        #closing open threads
+        mqtt_client.loop_stop()
+        print("keyboard interrupted")
 
-mqtt_client.loop_stop()
+
 
 
 
