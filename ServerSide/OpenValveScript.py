@@ -9,6 +9,7 @@ import time
 topic = "valve"
 host = "localhost"
 sleep = "sleeptimer"
+soil_humidity_level = "shl"
 broker_address = "localhost"
 mqtt_client = mqtt.Client()
 mongo_port = 27017
@@ -45,6 +46,10 @@ def on_message(client, userdata, msg):
         if(sleep in data):
             global sleep_timer
             sleep_timer = data[sleep]
+
+        if (soil_humidity_level in data):
+            global soil_humidity_level_to_irrigate
+            soil_humidity_level_to_irrigate = data[soil_humidity_level]
 
     except:
         print "there was an error with data2"
