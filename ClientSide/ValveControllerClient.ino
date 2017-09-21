@@ -3,9 +3,9 @@
 #include <string>
 
 
-#define MQTT_SERVER "192.168.xx.xx"
-const char* ssid = "**********";
-const char* password = "*********";
+#define MQTT_SERVER "192.168.43.110"
+const char* ssid = "AndroidAP";
+const char* password = "xbjx1325";
 int GPIO3 = 5;
 int GPIO2 = 4;
 char* topic = "valve";
@@ -37,6 +37,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void setup() {
   pinMode(GPIO2, OUTPUT);
   pinMode(GPIO3, OUTPUT);
+  digitalWrite(GPIO2, HIGH);
   Serial.begin(115200);
   delay(100);
 
