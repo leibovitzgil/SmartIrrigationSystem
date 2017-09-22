@@ -98,7 +98,9 @@ def irrigation_controller(id):
 def main(id):
     try:
         global sleep
+        global soil_humidity_level
         sleep = sleep + str(id)
+        soil_humidity_level = soil_humidity_level + str(id)
         print(sleep)
         mqtt_connection_setup()
         mqtt_client.loop_start()
