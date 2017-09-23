@@ -8,12 +8,16 @@ import time
 
 topic = "valve"
 host = "localhost"
-sleep = "sleeptimer"
-soil_humidity_level = "shl"
+sleep = "set_sleeptimer"
+soil_humidity_level = "set_soilHumidity"
+temperature_level = "set_temperature"
+humidity_level = "set_humidity"
 broker_address = "localhost"
 mqtt_client = mqtt.Client()
 mongo_port = 27017
 soil_humidity_level_to_irrigate = 350
+humidity_level_to_irrigate = 60
+temperature_level_to_irrigate = 30
 sleep_timer = 60
 
 # setup connection to db
@@ -97,11 +101,11 @@ def irrigation_controller(id):
 #starting the program
 def main(id):
     try:
-        global sleep
-        global soil_humidity_level
-        sleep = sleep + str(id)
-        soil_humidity_level = soil_humidity_level + str(id)
-        print(sleep)
+        # global sleep
+        # global soil_humidity_level
+        # sleep = sleep + str(id)
+        # soil_humidity_level = soil_humidity_level + str(id)
+        # print(sleep)
         mqtt_connection_setup()
         mqtt_client.loop_start()
         irrigation_controller(id)
